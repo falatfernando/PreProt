@@ -3,8 +3,15 @@ Biopython
 Pandas
 Numpy
 Tensorflow ou Keras para o modelo de machine Learning
+Streamlit
+stmol
+py3Dmol
+biotite
 
 Referências:
+app:
+https://icons.getbootstrap.com/
+
 
 Base de dados
 https://www.uniprot.org (Estrutura de proteínas)
