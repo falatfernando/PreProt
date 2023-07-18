@@ -17,7 +17,7 @@ def render_mol(pdb):
     
     showmol(pdbview, height= 300, width = 400)
 
-# Função que envia a sequência de DNA pra API ESM Fold
+# Função que envia a sequência de DNA pra API do ESM Fold
 def update(sequence):
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
