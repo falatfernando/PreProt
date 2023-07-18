@@ -1,11 +1,10 @@
-# model.py
-
 from Bio import SeqIO
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from functions.funcoes_aux import update
 import joblib
 
 def ler_fasta(file_path):
@@ -30,7 +29,18 @@ def preprocess_data(X_train, X_test, k=1):
     vectorizer = CountVectorizer(analyzer='char', ngram_range=(k, k))
     X_train_encoded = vectorizer.fit_transform(X_train)
     X_test_encoded = vectorizer.transform(X_test)
-    return X_train_encoded, X_test_encoded
+    return vectorizer, X_train_encoded, X_test_encoded
+
+def predict_protein_structure(input_sequence, nb_model, vectorizer):
+    pdb_string, b_value = update(input_sequence)
+
+    # Preprocess the input for Naive Bayes prediction
+    txt_encoded = vectorizer.transform([input_sequence])
+
+    # Perform prediction using Naive Bayes model
+    predicted_class = nb_model.predict(txt_encoded)[0]
+
+    return pdb_string, b_value, predicted_class
 
 def train_naive_bayes(X_train_encoded, y_train):
     naive_bayes_model = MultinomialNB()
@@ -47,6 +57,7 @@ def evaluate_model(model, X_train_encoded, y_train):
 
 def save_model(model, filename="trained_model.pkl"):
     joblib.dump(model, filename)
+
 
 if __name__ == "__main__":
     # Inputs

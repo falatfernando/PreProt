@@ -1,7 +1,18 @@
 import streamlit as st
 import functions.funcoes_aux as aux
+import functions.model as nb
+import joblib
 
 ### CONFIGURAÇÕES DA PÁGINA ###
+
+# Carregando o modelo de Naive Bayes
+nb_model = joblib.load("C:/Users/ferna/Documents/GitHub/PreProt/trained_model.pkl")
+
+# Load and preprocess the data using your existing functions from model.py
+file_path = "C:/Users/ferna/Documents/GitHub/PreProt/datasets/Escherichia coli str. K-12 substr. MG1655/proteome.fasta"
+df = nb.load_dataset(file_path)
+X_train, X_test, y_train, y_test = nb.split_dataset(df)
+vectorizer, X_train_encoded, X_test_encoded = nb.preprocess_data(X_train, X_test, k=1)
 
 ##################################### Configuração da interação da página com a janela ###############################################
 st.set_page_config(layout = 'wide', 
@@ -24,6 +35,7 @@ seq_default = "MASVSISCPSCSATDGVVRNGKSTAGHQRYLCSHCRKTWQLQFTYTASQPGTHQKIIDMAMNGVG
 # Caixa de Input
 txt = st.sidebar.text_area('Input da sequência', seq_default, height=230)
 
+
 # Botão de previsão de proteína
 predict = st.sidebar.button('Prever Proteína')
 st.sidebar.markdown(
@@ -43,8 +55,13 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
-# Declarando função do botão
+# Declarando função do botão (enviando pra API do ESM FOLD)
+
 pdb_string, b_value = aux.update(txt)
+pdb_string, b_value, predicted_class = nb.predict_protein_structure(txt, nb_model, vectorizer)
+
+# Usando o input do usuário como input pra predição do modelo
+
 
 # Linha separadora CSS
 st.sidebar.markdown('<hr>', unsafe_allow_html=True)
@@ -72,23 +89,30 @@ col1, col2 = st.columns([2, 2])
 # Coluna da esquerda
 
 with col1:
+        # ESM Fold Output
         st.markdown("<h3 style='color: #333333;'>Estrutura Molecular</h3>", unsafe_allow_html=True)
         aux.render_mol(pdb_string)
 
 with col2:
     container = st.container()
     container.markdown("<h3 style='color: #333333;'>Parâmetros</h3>", unsafe_allow_html=True)
+    
+    # Naive Bayes output
+    container.info(f"Classe Predita: {predicted_class}")
+    ## plDDT ESM Fold Output
     container.info(f'plDDT: {b_value}')
 
-
-    '''
-    container.markdown("<p style='color: #333333;'>plDDT é uma estimativa por resíduo da confidencia na predição da estrutura de 0 à 100</p>", unsafe_allow_html=True)
     container.download_button(
-    label="Download PDB",
+    label="Baixar PDB",
     data=pdb_string,
     file_name='predicted.pdb',
     mime='text/plain',
 )
+
+
+    '''
+    container.markdown("<p style='color: #333333;'>plDDT é uma estimativa por resíduo da confidencia na predição da estrutura de 0 à 100</p>", unsafe_allow_html=True)
+
 '''
 
 if not predict:

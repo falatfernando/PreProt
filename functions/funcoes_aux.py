@@ -3,6 +3,7 @@ from stmol import showmol
 import requests
 import biotite.structure.io as bsio
 import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
 
 #Função pra renderização 3D usando stmol
 def render_mol(pdb):
@@ -33,6 +34,4 @@ def update(sequence):
     b_value = round(struct.b_factor.mean(), 4)
 
     return pdb_string, b_value
-
-
 
