@@ -2,6 +2,7 @@ import streamlit as st
 import functions.funcoes_aux as aux
 import functions.model as nb
 import joblib
+from streamlit.components.v1 import html
 
 ### CONFIGURAÇÕES DA PÁGINA ###
 
@@ -21,8 +22,8 @@ st.set_page_config(layout = 'wide',
                    page_icon= "🧬")
 
 # Declarando CSS do app
-with open('C:/Users/ferna/Documents/GitHub/PreProt/style.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html = True)
+#with open('C:/Users/ferna/Documents/GitHub/PreProt/style.css') as f:
+#    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html = True)
 
 ##################################################### SIDEBAR ########################################################################
 # Título da Sidebar e Descrição
@@ -31,6 +32,12 @@ st.sidebar.markdown('''<p style="text-align: justify; color: white; font-size: 1
 
 # Sequência padrão INSA9_ECOLI
 seq_default = "MASVSISCPSCSATDGVVRNGKSTAGHQRYLCSHCRKTWQLQFTYTASQPGTHQKIIDMAMNGVGCRATARIMGVGLNTILRHLKNSGRSR"
+
+# Botão de Seleção:
+
+options = ["DNA", "AA", "mRNA", "tRNA"]
+st.sidebar.write('<style> div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+option = st.sidebar.radio("Tipo de Input", options)
 
 # Caixa de Input
 txt = st.sidebar.text_area('Input da sequência', seq_default, height=230)
@@ -84,36 +91,44 @@ st.markdown("<h1 style='color: #333333; text-align: center; margin-top: -80px;'>
 
 # Flexbox
 
-col1, col2 = st.columns([2, 2])
+col1, col2 = st.columns([2, 1])
 
 # Coluna da esquerda
 
 with col1:
-        # ESM Fold Output
-        st.markdown("<h3 style='color: #333333;'>Estrutura Molecular</h3>", unsafe_allow_html=True)
+        # Output ESM Fold 
+        st.markdown("<h3 style='color: #333333; text-align: center;'>Estrutura Molecular</h3>", unsafe_allow_html=True)
         aux.render_mol(pdb_string)
+
+        # Declarando colunas para separação
+        col1_a, col1_b = st.columns([1,1])
+
+        with col1_a:
+            st.download_button(
+                label="Baixar PDB",
+                data=pdb_string,
+                file_name='predicted.pdb',
+                mime='text/plain',
+            )
+
+        with col1_b:
+        ## Output plDDT ESM Fold 
+         st.info(f"Valor do plDDT: {b_value}")
+        st.markdown("<p style='color: #333333;'>plDDT é uma estimativa por resíduo da confidencia na predição da estrutura de 0 a 1. </p>", unsafe_allow_html=True)
+
 
 with col2:
     container = st.container()
-    container.markdown("<h3 style='color: #333333;'>Parâmetros</h3>", unsafe_allow_html=True)
+    container.markdown("<h3 style='color: #333333; text-align: center;'>Caracterização</h3>", unsafe_allow_html=True)
     
     # Naive Bayes output
     container.info(f"Classe Predita: {predicted_class}")
-    ## plDDT ESM Fold Output
-    container.info(f'plDDT: {b_value}')
-
-    container.download_button(
-    label="Baixar PDB",
-    data=pdb_string,
-    file_name='predicted.pdb',
-    mime='text/plain',
-)
 
 
-    '''
-    container.markdown("<p style='color: #333333;'>plDDT é uma estimativa por resíduo da confidencia na predição da estrutura de 0 à 100</p>", unsafe_allow_html=True)
 
-'''
 
-if not predict:
-    st.warning('👈 Enter protein sequence data!')
+
+
+
+#if not predict:
+#    st.warning('👈 Enter protein sequence data!')

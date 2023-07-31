@@ -4,6 +4,7 @@ import requests
 import biotite.structure.io as bsio
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
+import json
 
 #Função pra renderização 3D usando stmol
 def render_mol(pdb):
@@ -16,7 +17,7 @@ def render_mol(pdb):
     pdbview.spin(True)
     
     
-    showmol(pdbview, height= 300, width = 400)
+    showmol(pdbview, height= 400, width = 800)
 
 # Função que envia a sequência de DNA pra API do ESM Fold
 def update(sequence):
