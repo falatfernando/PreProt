@@ -2,6 +2,7 @@ import streamlit as st
 import functions.funcoes_aux as aux
 import functions.model as nb
 import joblib
+import pandas as pd
 from streamlit.components.v1 import html
 
 ### CONFIGURAÇÕES DA PÁGINA ###
@@ -14,6 +15,9 @@ file_path = "C:/Users/ferna/Documents/GitHub/PreProt/datasets/Escherichia coli s
 df = nb.load_dataset(file_path)
 X_train, X_test, y_train, y_test = nb.split_dataset(df)
 vectorizer, X_train_encoded, X_test_encoded = nb.preprocess_data(X_train, X_test, k=1)
+
+# Carrengando dataset contendo mais informações sobre as proteínas preditas
+df_interactors = pd.read_csv("C:/Users/ferna/Documents/GitHub/PreProt/datasets/MG1655_Chaperone_Interactors.csv")
 
 ##################################### Configuração da interação da página com a janela ###############################################
 st.set_page_config(layout = 'wide', 
@@ -67,8 +71,8 @@ st.sidebar.markdown(
 pdb_string, b_value = aux.update(txt)
 pdb_string, b_value, predicted_class = nb.predict_protein_structure(txt, nb_model, vectorizer)
 
-# Usando o input do usuário como input pra predição do modelo
-
+# Usando o output do modelo de Naive Bayes para buscar mais informações no df de chaperone interactors
+protein_match = df_interactors[df_interactors["Protein_ID_STEPdb_2.0"].str.contains(predicted_class, case = False)]
 
 # Linha separadora CSS
 st.sidebar.markdown('<hr>', unsafe_allow_html=True)
@@ -123,12 +127,8 @@ with col2:
     
     # Naive Bayes output
     container.info(f"Classe Predita: {predicted_class}")
-
-
-
-
-
-
-
-#if not predict:
-#    st.warning('👈 Enter protein sequence data!')
+    if not protein_match.empty:
+        st.info(f"Foram encontrados {len(protein_match)} matches para a proteína.")
+        st.table(protein_match)
+    else:
+        st.warning("Sem matches.")
