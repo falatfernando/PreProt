@@ -117,7 +117,7 @@ with col1:
 
         with col1_b:
         ## Output plDDT ESM Fold 
-         st.info(f"Valor do plDDT: {b_value}")
+         st.write(f"Valor do plDDT: {b_value}")
         st.markdown("<p style='color: #333333;'>plDDT é uma estimativa por resíduo da confidencia na predição da estrutura de 0 a 1. </p>", unsafe_allow_html=True)
 
 
@@ -129,6 +129,39 @@ with col2:
     container.info(f"Classe Predita: {predicted_class}")
     if not protein_match.empty:
         st.info(f"Foram encontrados {len(protein_match)} matches para a proteína.")
-        st.table(protein_match)
+
+        df_display = protein_match
+        desired_column_order = ['Protein_ID_STEPdb_2.0', 
+                                'Accession_STEPdb_2.0', 
+                                'Uniprot_Protein_Name',
+                                'STEPdb_Universal_Name',
+                                '1ary_Gene_Name',
+                                'STEPdb_Sub-cellular_Location_Letter Code',
+                                'STEPdb_Sub-cellular_Location_Full Name',
+                                'sub-cellular_topology_group',
+                                ]
+
+
+
+
+        renamed_columns = {'Accession_STEPdb_2.0': 'Accession STEPdb 2.0', 
+                           'Protein_ID_STEPdb_2.0': 'ID da Proteína STEPdb 2.0', 
+                           '1ary_Gene_Name': 'Nome do Gene Primário',
+                           'STEPdb_Universal_Name': 'Nome Universal',
+                           'Uniprot_Protein_Name': 'Nome da Proteína UNIPROT',
+                           'STEPdb_Sub-cellular_Location_Full Name': 'Localidade Subcelular',
+                           'STEPdb_Sub-cellular_Location_Letter Code': 'Código da Localidade',
+                           'sub-cellular_topology_group': 'Grupo de Topologia'
+                           }
+        df_display = df_display[desired_column_order].rename(columns=renamed_columns)
+
+        df_display = df_display.transpose().reset_index()
+
+        df_display.columns = df_display.iloc[0]
+        df_display = df_display.iloc[1:8].reset_index(drop=True)
+
+
+        st.table(df_display)
+
     else:
         st.warning("Sem matches.")
