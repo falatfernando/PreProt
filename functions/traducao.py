@@ -58,15 +58,3 @@ def traducao(sequencia_mRNA):
             sequencia_proteina += amino_acido
     
     return sequencia_proteina
-
-# Simualação de uma replicação inserir snippet no main
-
-sequencia_DNA = "ATGCATCGTAA"
-sequencia_mRNA = dna_para_mRNA(sequencia_DNA)
-sequencia_tRNA = mRNA_para_tRNA(sequencia_mRNA)
-sequencia_proteina = traducao(sequencia_mRNA) # sequência de proteínas >= 70 Aminoácidos
-
-print("Sequência de DNA:", sequencia_DNA)
-print("Sequência de mRNA:", sequencia_mRNA)
-print("Sequência de tRNA:", sequencia_tRNA)
-print("Sequência de aminoácidos:", sequencia_proteina) 

@@ -4,6 +4,8 @@ import functions.model as nb
 import joblib
 import pandas as pd
 from streamlit.components.v1 import html
+import functions.traducao as tl
+import time
 
 ### CONFIGURAÇÕES DA PÁGINA ###
 
@@ -34,17 +36,40 @@ st.set_page_config(layout = 'wide',
 st.sidebar.markdown('''<h1 style="text-align: center; color: white; font-size: 36px"><b>PreProt 🧬</b></h1>''', unsafe_allow_html = True)
 st.sidebar.markdown('''<p style="text-align: justify; color: white; font-size: 14.7px">Modelo de Machine Learning para predição de proteínas da <i>E. Coli</i></p>''', unsafe_allow_html = True)
 
-# Sequência padrão INSA9_ECOLI
-seq_default = "MASVSISCPSCSATDGVVRNGKSTAGHQRYLCSHCRKTWQLQFTYTASQPGTHQKIIDMAMNGVGCRATARIMGVGLNTILRHLKNSGRSR"
-
 # Botão de Seleção:
 
-options = ["DNA", "AA", "mRNA", "tRNA"]
+options = ["AA", "mRNA", "DNA"]
 st.sidebar.write('<style> div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
 option = st.sidebar.radio("Tipo de Input", options)
 
-# Caixa de Input
-txt = st.sidebar.text_area('Input da sequência', seq_default, height=230)
+# Inteligência dos botões
+
+if option == "AA":
+    # Sequência padrão AAT_ECOLI
+    seq_default = "MFENITAAPADPILGLADLFRADERPGKINLGIGVYKDETGKTPVLTSVKKAEQYLLENETTKNYLGIDGIPEFGRCTQELLFGKGSALINDKRARTAQTPGGTGALRVAADFLAKNTSVKRVWVSNPSWPNHKSVFNSAGLEVREYAYYDAENHTLDFDALINSLNEAQAGDVVLFHGCCHNPTGIDPTLEQWQTLAQLSVEKGWLPLFDFAYQGFARGLEEDAEGLRAFAAMHKELIVASSYSKNFGLYNERVGACTLVAADSETVDRAFSQMKAAIRANYSNPPAHGASVVATILSNDALRAIWEQELTDMRQRIQRMRQLFVNTLQEKGANRDFSFIIKQNGMFSFSGLTKEQVLRLREEFGVYAVSGRVNVAGMTPDNMAPLCEAIVAVL"
+    txt = st.sidebar.text_area('Input da sequência', seq_default, height=230)
+
+    seq_input = txt
+
+
+elif option == "mRNA":
+    # Sequência padrão INSE1_ECOLI
+    seq_default = "CGUCAAUCAACAAAACUGGCUGCGUCAUUAUUUUAAGCAGUAUCUGCGUCAGCACAUUACGCCGAUUUUAAUCAAUCCUGACACUGACUUAGUGCAGUUCCUGAAAGAUGAUUACACCUAUCUGGCGGUGGAAAUUAUCCGUGGCGAUACCAUCCGUUACGCGCUGCUGGAGAUCCCAUCAGAUAAAGUGCCGCGCUUUGUGAAUUUACCGCCAGAAGCGCCGCGUCGACGCAAGCCGAUGAUUCUUCUGGAUAACAUUCUGCGUUACUGCCUUGAUGAUAUUUUCAAAGGCUUCUUUGAUUAUGACGCGCUGAAUGCCUAUUCAAUGAAGAUGACCCGCGAUGCCGAAUACGAUUUAGUGCAUGAGAUGGAAGCCAGCCUGAUGGAGUUGAUGUCUUCCAGUCUCAAGCAGCGUUUAACUGCUGAGCCGGUGCGUUUUGUUUAUCAGCGCGAUAUGCCCAAUGCGCUGGUUGAAGUGUUACGCGAAAAACUGACUAUUUCCCGCUACGACUCCAUCGUCCCCGGCGGUCGUUAUCAUAAUUUUAAAGACUUUAUUAAUUUCCCCAAUGUCGGCAAAGCCAAUCUGGUGAACAAACCACUGCCGCGUUUACGCCAUAUUUGGUUUGAUAAAGCCCAGUUCCGCAAUGGUUUUGAUGCCAUUCGCGAACGCGAUGUGUUGCUCUAUUAUCCUUAUCACACCUUUGAGCAUGUGCUGGAACUGCUGCGUCAGGCUUCGUUCGACCCGAGCGUACUGGCGAUUAAAAUUAACAUUUACCGCGUGGCGAAAGAUUCACGCAUCAUCGACUCGAUGAUCCACGCCGCACAUAACGGUAAGAAAGUCACCGUGGUGGUUGAGUUACAGGCGCGUUUCGACGAAGAAGCCAACAUUCACUGGGCGAAGCGCCUGACCGAAGCAGGCGUGCACGUUAUCUUCUCUGCGCCGGGGCUGAAAAUUCACGCCAAACUGUUCCUGAUUUCACGUAAAGAAAACGGUGAAGUGGUGCGUUAUGCACACAUCGGGACCGGGAACUUUAACGAAAAAACCGCGCGUCUUUAUACUGACUAUUCGUUGCUGACCGCCGAUGCGCGCAUCACCAACGAAGUACGGCGGGUAUUUAACUUUAUUGAAAACCCAUACCGUCCGGUGACAUUUGAUUAUUUAAUGGUAUCGCCGCAAAACUCCCGCCGCCUAUUGUAUGAAAUGGUGGACCGCGAGAUCGCCAACGCGCAGCAAGGGCUGCCCAGUGGUAUCACCCUGAAGCUAAAUAACCUUGUCGAUAAAGGCCUGGUUGAUCGUCUGUAUGCGGCCUCCAGCUCCGGCGUACCGGUUAAUCUGCUGGUUCGCGGAAUGUGUUCGCUGAUCCCCAAUCUGGAAGGCAUUAGCGACAACAUUCGUGCCAUCAGUAUUGUUGACCGUUACCUUGAACAUGACCGGGUUUAUAUUUUUGAAAAUGGCGGCGAUAAAAAGGUCUACCUUUCUUCCGCCGACUGGAUGACGCGCAAUAUUGAUUAUCGUAUUGAAGUGGCGACGCCGCUGCUCGAUCCGCGCCUGAAGCAGCGGGUACUGGACAUCAUCGACAUAUUGUUCAGCGAUACGGUCAAAGCACGUUAUAUCGAUAAAGAACUCAGUAAUCGCUACGUUCCCCGCGGCAAUCGCCGCAAAGUACGGGCGCAGUUGGCGAUUUAUGACUACAUCAAAUCACUCGAACAACCUGAAUAACCCUAUGCCAAUACACGAUAAAUCCCCUCGUCCGCAGGAGUUUGCUGCGGUCGAUCUUGGUUCAAACAGUUUUCACAUGGUCAUAGCCCGUGUGGUAGAUGGUGCCAUGCAGAUUAUUGGCCGCCUGAAACAGCGGGUGCAUCUGGCGGACGGCCUGGGGCCAGAUAAUAUGUUGAGUGAAGAGGCAAUGACGCGCGGUUUAAACUGUCUGUCGCUGUUUGCCGAACGGCUACAAGGGUUUUCUCCUGCCAGCGUCUGUAUAGUUGGUACCCAUACGCUGCGUCAGGCGCUGAACGCCACUGACUUUCUGAAACGCGCGGAAAAGGUCAUUCCCUACCCGAUUGAAAUUAUUUCCGGUAAUGAAGAAGCCCGUCUGAUUUUUAUGGGCGUGGAACAUACCCAACCGGAAAAAGGUCGCAAACUGGUUAUUGAUAUUGGCGGCGGAUCUACGGAACUGGUGAUUGGUGAAAAUUUCGAACCUAUUCUCGUUGAAAGCCGCCGGAUGGGUUGUGUCAGCUUUGCCCAGCUUUAUUUUCCUGGCGGGGUCAUCAAUAAAGAGAAUUUUCAGCGCGCUCGCAUGGCGGCAGCACAAAAACUGGAAACUUUAACCUGGCAAUUCCGUAUUCAGGGCUGGAACGUUGCAAUGGGCGCUUCCGGUACCAU"
+    txt = st.sidebar.text_area('Input da sequência', seq_default, height=230)
+    
+    sequencia_proteina = tl.traducao(txt)
+    seq_input = sequencia_proteina
+    
+
+elif option == "DNA":
+    # Sequência padrão TONB_ECOLI
+    seq_default = "AGACCGGTTACATCCCCCTAACAAGCTGTTTAAAGAGAAATACTATCATGACGGACAAATTGACCTCCCTTCGTCAGTACACCACCGTAGTGGCCGACACTGGGGACATCGCGGCAATGAAGCTGTATCAACCGCAGGATGCCACAACCAACCCTTCTCTCATTCTTAACGCAGCGCAGATTCCGGAATACCGTAAGTTGATTGATGATGCTGTCGCCTGGGCGAAACAGCAGAGCAACGATCGCGCGCAGCAGATCGTGGACGCGACCGACAAACTGGCAGTAAATATTGGTCTGGAAATCCTGAAACTGGTTCCGGGCCGTATCTCAACTGAAGTTGATGCGCGTCTTTCCTATGACACCGAAGCGTCAATTGCGAAAGCAAAACGCCTGATCAAACTCTACAACGATGCTGGTATTA"
+    txt = st.sidebar.text_area('Input da sequência', seq_default, height=230)
+    
+    sequencia_DNA = txt
+    sequencia_mRNA = tl.dna_para_mRNA(sequencia_DNA)
+    sequencia_proteina = tl.traducao(sequencia_mRNA)
+    seq_input = sequencia_proteina
 
 
 # Botão de previsão de proteína
@@ -66,13 +91,6 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
-# Declarando função do botão (enviando pra API do ESM FOLD)
-
-pdb_string, b_value = aux.update(txt)
-pdb_string, b_value, predicted_class = nb.predict_protein_structure(txt, nb_model, vectorizer)
-
-# Usando o output do modelo de Naive Bayes para buscar mais informações no df de chaperone interactors
-protein_match = df_interactors[df_interactors["Protein_ID_STEPdb_2.0"].str.contains(predicted_class, case = False)]
 
 # Linha separadora CSS
 st.sidebar.markdown('<hr>', unsafe_allow_html=True)
@@ -86,82 +104,133 @@ st.sidebar.markdown(''' <p style = "text-align: left;
                                     Contato: fernandofalat@proton.me
                     </p>''', unsafe_allow_html = True)
 
+# Declarando função do botão (enviando pra API do ESM FOLD)
+if predict:
+    pdb_string, b_value = aux.update(seq_input)
+    pdb_string, b_value, predicted_class = nb.predict_protein_structure(seq_input, nb_model, vectorizer)
+
+    # Usando o output do modelo de Naive Bayes para buscar mais informações no df de chaperone interactors
+    protein_match = df_interactors[df_interactors["Protein_ID_STEPdb_2.0"].str.contains(predicted_class, case = False)]
+
+
 ######################################################################################################################################
 ######################################################################################################################################
 ################################################### MAIN PAGE ########################################################################
 
-# Título do Dashboard
-st.markdown("<h1 style='color: #333333; text-align: center; margin-top: -80px;'>Caracterização da Proteína</h1>", unsafe_allow_html=True)
+    # Título do Dashboard
+    st.markdown('''<h1 style="text-align: center; color: white; font-size: 48px"><b>Caracterização da Proteína</b></h1>''', unsafe_allow_html = True)
 
-# Flexbox
+    # Flexbox
 
-col1, col2 = st.columns([2, 1])
+    col1, col2 = st.columns([2, 1])
 
-# Coluna da esquerda
+    # Coluna da esquerda
 
-with col1:
-        # Output ESM Fold 
-        st.markdown("<h3 style='color: #333333; text-align: center;'>Estrutura Molecular</h3>", unsafe_allow_html=True)
-        aux.render_mol(pdb_string)
+    with col1:
+            # Output ESM Fold 
+            st.subheader("Estrutura Molecular", help = "API do ESMFold")
+            aux.render_mol(pdb_string)
 
-        # Declarando colunas para separação
-        col1_a, col1_b = st.columns([1,1])
+            # Declarando colunas para separação
+            col1_a, col1_b = st.columns([1,1])
 
-        with col1_a:
+            with col1_a:
+                st.download_button(
+                    label="Baixar PDB",
+                    data=pdb_string,
+                    file_name='predicted.pdb',
+                    mime='text/plain',
+                )
+
+            with col1_b:
+            ## Output plDDT ESM Fold 
+                st.write(f"Valor do plDDT: {b_value}")
+            
+            st.write("plDDT é uma estimativa por resíduo da confidencia na predição da estrutura de 0 a 1.")
+
+    # Coluna da direita
+    with col2:
+        container = st.container()
+        container.subheader("Caracterização", help = "Classificador de Naive Bayes")
+        
+        # Naive Bayes output
+        container.info(f"Classe Predita: {predicted_class}")
+        if not protein_match.empty:
+            st.info(f"Foram encontrados {len(protein_match)} matches para a proteína.")
+
+            df_display = protein_match
+            desired_column_order = ['Protein_ID_STEPdb_2.0', 
+                                    'Accession_STEPdb_2.0', 
+                                    'Uniprot_Protein_Name',
+                                    'STEPdb_Universal_Name',
+                                    '1ary_Gene_Name',
+                                    'STEPdb_Sub-cellular_Location_Letter Code',
+                                    'STEPdb_Sub-cellular_Location_Full Name',
+                                    'sub-cellular_topology_group',
+                                    ]
+
+
+
+
+            renamed_columns = {'Accession_STEPdb_2.0': 'Accession STEPdb 2.0', 
+                            'Protein_ID_STEPdb_2.0': 'ID da Proteína STEPdb 2.0', 
+                            '1ary_Gene_Name': 'Nome do Gene Primário',
+                            'STEPdb_Universal_Name': 'Nome Universal',
+                            'Uniprot_Protein_Name': 'Nome da Proteína UNIPROT',
+                            'STEPdb_Sub-cellular_Location_Full Name': 'Localidade Subcelular',
+                            'STEPdb_Sub-cellular_Location_Letter Code': 'Código da Localidade',
+                            'sub-cellular_topology_group': 'Grupo de Topologia'
+                            }
+            df_display = df_display[desired_column_order].rename(columns=renamed_columns)
+
+            df_display = df_display.transpose().reset_index()
+
+            df_display.columns = df_display.iloc[0]
+            df_display = df_display.iloc[1:8].reset_index(drop=True)
+
+            df_display = df_display.reset_index(drop=True)
+            st.write(df_display.reset_index(drop=True))
+
             st.download_button(
-                label="Baixar PDB",
-                data=pdb_string,
-                file_name='predicted.pdb',
-                mime='text/plain',
+                label="Download CSV",
+                data=df.to_csv(),
+                file_name="consulta_preprot.csv",
+                mime="text/csv"
             )
 
-        with col1_b:
-        ## Output plDDT ESM Fold 
-         st.write(f"Valor do plDDT: {b_value}")
-        st.markdown("<p style='color: #333333;'>plDDT é uma estimativa por resíduo da confidencia na predição da estrutura de 0 a 1. </p>", unsafe_allow_html=True)
-
-
-with col2:
-    container = st.container()
-    container.markdown("<h3 style='color: #333333; text-align: center;'>Caracterização</h3>", unsafe_allow_html=True)
+        else:
+            st.warning("Sem matches.")
+else:
+    st.markdown('''<h1 style="text-align: center; color: white; font-size: 48px"><b>PreProt 🧬</b></h1>''', unsafe_allow_html = True)
+    st.markdown('''<p style="text-align: center; color: white; font-size: 16px">Modelo de Machine Learning para predição de proteínas da <i>E. Coli</i></p>''', unsafe_allow_html = True)
     
-    # Naive Bayes output
-    container.info(f"Classe Predita: {predicted_class}")
-    if not protein_match.empty:
-        st.info(f"Foram encontrados {len(protein_match)} matches para a proteína.")
+    st.info("👈 Navegue pelo menu lateral para avaliar o modelo, as métricas e realizar consultas.")
+    st.warning("👈 Insira uma sequência na caixa ao lado e aperte o botão de prever proteína para uma análise detalhada da sequência!")
+    
+    st.markdown(
+        """
+        <style>
+            .icon-link a {
+                text-decoration: none;
+            }
 
-        df_display = protein_match
-        desired_column_order = ['Protein_ID_STEPdb_2.0', 
-                                'Accession_STEPdb_2.0', 
-                                'Uniprot_Protein_Name',
-                                'STEPdb_Universal_Name',
-                                '1ary_Gene_Name',
-                                'STEPdb_Sub-cellular_Location_Letter Code',
-                                'STEPdb_Sub-cellular_Location_Full Name',
-                                'sub-cellular_topology_group',
-                                ]
+            .icon-link a:hover {
+                opacity: 0.75;
+            }
+        </style>
+        <div class="icon-link" style='text-align: center; margin-bottom: 20px;'>
+            <a href="mailto:fernandofalat@proton.me" target="_blank" style='margin: 10px;'>
+                <img src="https://img.icons8.com/fluent/48/000000/gmail.png"/>
+            </a>
+            <a href="https://www.linkedin.com/in/fernandofalat/" target="_blank" style='margin: 10px;'>
+                <img src="https://img.icons8.com/color/48/000000/linkedin.png"/>
+            </a>
+            <a href="https://github.com/falatfernando" target="_blank" style='margin: 10px;'>
+                <img src="https://img.icons8.com/fluent/48/000000/github.png"/>
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-
-
-
-        renamed_columns = {'Accession_STEPdb_2.0': 'Accession STEPdb 2.0', 
-                           'Protein_ID_STEPdb_2.0': 'ID da Proteína STEPdb 2.0', 
-                           '1ary_Gene_Name': 'Nome do Gene Primário',
-                           'STEPdb_Universal_Name': 'Nome Universal',
-                           'Uniprot_Protein_Name': 'Nome da Proteína UNIPROT',
-                           'STEPdb_Sub-cellular_Location_Full Name': 'Localidade Subcelular',
-                           'STEPdb_Sub-cellular_Location_Letter Code': 'Código da Localidade',
-                           'sub-cellular_topology_group': 'Grupo de Topologia'
-                           }
-        df_display = df_display[desired_column_order].rename(columns=renamed_columns)
-
-        df_display = df_display.transpose().reset_index()
-
-        df_display.columns = df_display.iloc[0]
-        df_display = df_display.iloc[1:8].reset_index(drop=True)
-
-
-        st.table(df_display)
-
-    else:
-        st.warning("Sem matches.")
+    st.markdown('''<p style="text-align: center; color: white; font-size: 12px">Desenvolvido por Fernando Falat Rangel para o Trabalho de Conclusao de Curso de Data Science e Analytics da Escola Superior de Agronomia Luís de Queiroz da Universidade de São Paulo</i></p>''', unsafe_allow_html = True)

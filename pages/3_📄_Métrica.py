@@ -4,8 +4,8 @@ import streamlit as st
 st.set_page_config(
                 layout = 'wide', 
                 initial_sidebar_state = 'expanded',      
-                page_title = "Métrica",
-                page_icon= "📄",
+                page_title = "PreProt Métrica",
+                page_icon= "🧬",
                 )
 with open('C:/Users/ferna/Documents/GitHub/PreProt/style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html = True)
