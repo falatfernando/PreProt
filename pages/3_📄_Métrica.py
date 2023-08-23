@@ -1,4 +1,6 @@
 import streamlit as st
+from PIL import Image
+
 ######################################################### CONFIGURAÇÃO ###############################################################
 # Declarando configurações da página
 st.set_page_config(
@@ -27,7 +29,7 @@ st.sidebar.markdown('<hr>', unsafe_allow_html=True)
 # Icones
 
 # E-mail
-# Hyperlinks to LinkedIn, GitHub, and Email
+# Hyperlinks do LinkedIn, GitHub, and Email
 st.sidebar.markdown(
     """
     <style>
@@ -53,7 +55,7 @@ st.sidebar.markdown(
     """,
     unsafe_allow_html=True,
 )
-# Add custom CSS to set text color
+# CSS para alterar a cor do texto
 custom_css = """
 <style>
     body {
@@ -73,13 +75,12 @@ custom_css = """
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-# Title
+# Título
 st.markdown("<b style='font-size: 24px'>O que é o PreProt?</b>", unsafe_allow_html=True)
-st.markdown("<p>PreProt é um projeto de implementação de Machine Learning, mais especificamente Naive Bayes, para avaliar a eficácia e acurácia do modelo dentro do campo da bioinformática, através de testes de eficácia como o F test e outros parâmetros. Mais informações do projeto podem ser encontradas na <a href='readme.txt'>documentação</a> e na <a href='https://docs.google.com/document/d/1evF9-wIk1tZ6xFhq2hgq4nII7toi9ARP/edit)'>monografia</a>.</p>", unsafe_allow_html=True)
+st.markdown("<p>PreProt é um projeto de implementação de Machine Learning, mais especificamente o modelo de Naive Bayes, para avaliar a eficácia e acurácia do mesmo dentro do campo da bioinformática, através de testes de eficácia encontrados na aba 'Avaliação do Modelo'. Mais informações do projeto podem ser encontradas na <a href='readme.txt'>documentação</a> e na <a href='https://docs.google.com/document/d/1evF9-wIk1tZ6xFhq2hgq4nII7toi9ARP/edit)'>monografia</a>.</p>", unsafe_allow_html=True)
 
-# Introduction
+# Introdução
 st.markdown("<h3><b style='font-size: 24px'>Introdução</b></h3>", unsafe_allow_html=True)
-st.markdown("<p>O output fornecido acima representa a sequência de aminoácidos presentes no genoma da cepa de <i>E. coli</i> em questão. Podemos ver que cada sequência de aminoácidos representa uma proteína com nome 'ecmdb_XXXXXX'.</p>", unsafe_allow_html=True)
 st.markdown("""
     <div>
         <p align='justify'>A fim de que ocorra a formação de uma proteína, é necessário percorrer um conjunto de etapas. Iniciando-se pelos ácidos nucleicos, que constituem a base do DNA (ATCG):
@@ -94,17 +95,32 @@ st.markdown("""
         <br></br>
         <p>A imagem abaixo exemplifica o processo da tradução da fita de mRNA até a leitura pela fita de tRNA:</p>
         <p style='text-align:center;'>
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Aminoacids_table.svg/609px-Aminoacids_table.svg.png?20210405175054' alt='Tabela de conversão de aminoácidos' width='500' height='500' align=center>
+            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Aminoacids_table.svg/609px-Aminoacids_table.svg.png?20210405175054' alt='Tabela de conversão de aminoácidos' width='500' height='500' align=center> </img>
         </p>
     </div>
 """, unsafe_allow_html=True)
 
 # Machine Learning
 st.markdown("<h3><b style='font-size: 24px'>Machine Learning</b></h3>", unsafe_allow_html=True)
-st.markdown("<div><p>De acordo com a literatura científica, uma proteína é composta por uma cadeia polipeptídica que pode conter mais de 70 aminoácidos. Como existem 20 tipos diferentes de aminoácidos que podem ser usados para construir uma proteína, e esses aminoácidos podem ser combinados em qualquer ordem, o número de sequências possíveis é virtualmente infinito. Portanto, as proteínas possuem combinações quase infinitas de aminoácidos.</p>", unsafe_allow_html=True)
-st.markdown("<p>Logo mm algoritmo de machine learning pode aprender a partir de dados experimentais como o DNA é transcrito em RNA e depois traduzido em proteínas, quais são os fatores que influenciam essa transformação e quais são as consequências de mutações ou alterações na expressão gênica.</p>", unsafe_allow_html=True)
-st.markdown("<p>Com o objetivo de facilitar o processo de tradução de uma sequência de DNA em uma proteína, o PreProt treina um modelo de aprendizado de máquina, e analisa os resultados, com uma base de dados contendo o proteoma da <i>Escherichia coli</i> K-12 substr. MG1655, que é a bactéria mais estudada na humanidade.</p></div>", unsafe_allow_html=True)
+st.markdown("<div><p>Como citado anteriormente, uma proteína é composta por uma cadeia polipeptídica que pode conter mais de 70 aminoácidos. Como existem 20 tipos diferentes de aminoácidos que podem ser usados para construir uma proteína, e esses aminoácidos podem ser combinados em qualquer ordem, o número de sequências possíveis é virtualmente infinito. Portanto, as proteínas possuem combinações quase infinitas de aminoácidos.</p>", unsafe_allow_html=True)
+st.markdown("<p>Logo um algoritmo de machine learning pode aprender a partir de dados experimentais como o DNA é transcrito em RNA e depois traduzido em proteínas, quais são os fatores que influenciam essa transformação e quais são as consequências de mutações ou alterações na expressão gênica.</p>", unsafe_allow_html=True)
+st.markdown("<p>Com o objetivo de facilitar o processo de tradução de uma sequência de DNA em uma proteína, o PreProt treina um modelo de aprendizado de máquina, e analisa os resultados, com uma base de dados contendo o proteoma da <i>Escherichia coli</i> K-12 substr. MG1655, que é uma das bactérias melhor caracterizada atualmente.</p></div>", unsafe_allow_html=True)
 
 # Integração com ESMFold
 st.markdown("<h3><b style='font-size: 24px'>ESM Fold</b></h3>", unsafe_allow_html=True)
-st.markdown("<p>O output do modelo de machine learning é enviado para a API do ESM Fold, algorítimo de predição de estruturas 3D de proteínas desenvolvido pela Meta AI em 2023, retornando um dataset com dados nescessários para plotar a estrutura 3D da proteína através do módulo py3Dmol.</p>", unsafe_allow_html=True)
+st.markdown("<p>O output do modelo de machine learning é enviado para a API do ESM Fold, algorítimo de predição de estruturas 3D de proteínas desenvolvido pela Meta AI em 2023, retornando um dataset com dados nescessários para plotar a estrutura 3D da proteína através do módulo py3Dmol. Para saber mais sobre o ESM Fold acesse o <a href = 'https://ai.meta.com/blog/protein-folding-esmfold-metagenomics/'> artigo publicado no blog da Meta AI.</a> </p>", unsafe_allow_html=True)
+
+# Arquitetura do aplicativo
+st.markdown("<h3> <b style='font-size: 24px'> Arquitetura do Aplicativo </b> </h3>", unsafe_allow_html=True)
+st.markdown("<p>A interface gráfica do PreProt apresenta a proposta de aprimorar a acessibilidade à informação para todos aqueles que desejam interagir com um modelo treinado, viabilizando a exploração de diferentes sequências de proteínas não nescessariamente sabendo programar.</p>", unsafe_allow_html=True)
+st.markdown("<p>O aplicativo opera por meio do encaminhamento da entrada da sequência fornecida pelo usuário por dois percursos distintos, após ser submetida ao processo de pré-processamento adequado: a API do ESMFold e o modelo treinado de Naive Bayes. O diagrama a seguir ilustra de forma esquemática o fluxo dos dados até o usuário:</p>"
+            , unsafe_allow_html= True)
+
+# Local path to the image
+image_path = r'C:\Users\ferna\Documents\GitHub\PreProt\images\Fluxograma APP.png'
+
+# Open the image using PIL
+image = Image.open(image_path)
+
+# Display the image
+st.image(image, use_column_width=True)
