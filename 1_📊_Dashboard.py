@@ -5,7 +5,6 @@ import joblib
 import pandas as pd
 from streamlit.components.v1 import html
 import functions.traducao as tl
-import time
 
 ### CONFIGURAÇÕES DA PÁGINA ###
 
@@ -191,7 +190,7 @@ if predict:
             df_display = df_display.reset_index(drop=True)
             st.write(df_display.reset_index(drop=True))
 
-            st.download_button(
+            testeeee = st.download_button(
                 label="Download CSV",
                 data=df.to_csv(),
                 file_name="consulta_preprot.csv",
@@ -200,6 +199,7 @@ if predict:
 
         else:
             st.warning("Sem matches.")
+
 else:
     st.markdown('''<h1 style="text-align: center; color: white; font-size: 48px"><b>PreProt 🧬</b></h1>''', unsafe_allow_html = True)
     st.markdown('''<p style="text-align: center; color: white; font-size: 16px">Modelo de Machine Learning para predição de proteínas da <i>E. Coli</i></p>''', unsafe_allow_html = True)
