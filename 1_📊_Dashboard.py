@@ -9,16 +9,16 @@ import functions.traducao as tl
 ### CONFIGURAÇÕES DA PÁGINA ###
 
 # Carregando o modelo de Naive Bayes
-nb_model = joblib.load("C:/Users/ferna/Documents/GitHub/PreProt/trained_model.pkl")
+nb_model = joblib.load('trained_model.pkl')
 
 # Load and preprocess the data using your existing functions from model.py
-file_path = "C:/Users/ferna/Documents/GitHub/PreProt/datasets/Escherichia coli str. K-12 substr. MG1655/proteome.fasta"
+file_path = 'datasets/Escherichia coli str. K-12 substr. MG1655/proteome.fasta'
 df = nb.load_dataset(file_path)
 X_train, X_test, y_train, y_test = nb.split_dataset(df)
 vectorizer, X_train_encoded, X_test_encoded = nb.preprocess_data(X_train, X_test, k=1)
 
 # Carrengando dataset contendo mais informações sobre as proteínas preditas
-df_interactors = pd.read_csv("C:/Users/ferna/Documents/GitHub/PreProt/datasets/MG1655_Chaperone_Interactors.csv")
+df_interactors = pd.read_csv('datasets/MG1655_Chaperone_Interactors.csv')
 
 ##################################### Configuração da interação da página com a janela ###############################################
 st.set_page_config(layout = 'wide', 
