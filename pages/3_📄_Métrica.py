@@ -9,7 +9,7 @@ st.set_page_config(
                 page_title = "PreProt Métrica",
                 page_icon= "🧬",
                 )
-with open('C:/Users/ferna/Documents/GitHub/PreProt/style.css') as f:
+with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html = True)
 
 st.markdown('<link href="https://use.fontawesome.com/d178376847.css" rel="stylesheet">', unsafe_allow_html=True)
