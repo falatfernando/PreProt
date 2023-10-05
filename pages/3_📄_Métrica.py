@@ -117,7 +117,7 @@ st.markdown("<p>O aplicativo opera por meio do encaminhamento da entrada da sequ
             , unsafe_allow_html= True)
 
 # Local path to the image
-image_path = r'C:\Users\ferna\Documents\GitHub\PreProt\images\Fluxograma APP.png'
+image_path = r'images/Fluxograma APP.png'
 
 # Open the image using PIL
 image = Image.open(image_path)
