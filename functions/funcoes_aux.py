@@ -25,7 +25,7 @@ def update(sequence):
         'Content-Type': 'text/plain',  # Change content type to text/plain
     }
     # Pass the sequence directly in the 'data' parameter without encoding it
-    response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', headers=headers, data=sequence)
+    response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', headers=headers, data=sequence, verify=False)
     
     name = sequence[:3] + sequence[-3:]
     pdb_string = response.content.decode('utf-8')
