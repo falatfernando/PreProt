@@ -22,9 +22,11 @@ def render_mol(pdb):
 # Função que envia a sequência de DNA pra API do ESM Fold
 def update(sequence):
     headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'text/plain',  # Change content type to text/plain
     }
+    # Pass the sequence directly in the 'data' parameter without encoding it
     response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', headers=headers, data=sequence)
+    
     name = sequence[:3] + sequence[-3:]
     pdb_string = response.content.decode('utf-8')
 
@@ -35,4 +37,5 @@ def update(sequence):
     b_value = round(struct.b_factor.mean(), 4)
 
     return pdb_string, b_value
+
 
